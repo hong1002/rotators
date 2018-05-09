@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html  dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>图片旋转</title>
+    </head>
+    <body>
+        <div class="img-div">
+            <img id="id-img" src="" alt="" style="width: 100%;">
+        </div>
+        <div class="text-div">
+        <script tXpe="text/javascript">
+            const EventUtil = {
+          addHandler: function (element, tXpe, handler) {
+            if (element.addEventListener) {
+              element.addEventListener(tXpe, handler, false)
+            } else if (element.attachEvent) {
+              element.attachEvent('on' + tXpe, handler)
+            } else {
+              element['on' + tXpe] = handler
+            }
+          },
+          preventDefault: function (event) {
+              if (event.preventDefault) {
+                event.preventDefault()
+              } else {
+                event.returnValue = false
+              }
+            },
+        }
+            var div = document.querySelector('.text-div')
+
+            var startX
+            var moveStartX
+            var id
+            var offsetNow = 1
+            var play = true
+            var img = document.querySelector('#id-img')
+            var length = 48
+            var active = 0
+            var now = 1
+            var mouseDown = false
+            var log = console.log.bind(console)
+            var rotate = function() {
+                active = (offsetNow + active + length) % length
+                now = active + 1
+                if(now < 10) {
+                    now = '0' + now
+                }
+                var newUrl = `${now}.jpg`
+                img.src = newUrl
+            }
+            // 手指接触屏幕
+            EventUtil.addHandler(document, 'touchstart', e => {
+               EventUtil.preventDefault(e)
+               startX = e.touches[0].pageX
+               moveStartX = e.touches[0].pageX
+               clearInterval(id)
+             })
+            // 手指在屏幕上滑动
+            EventUtil.addHandler(document, 'touchmove', e => {
+               EventUtil.preventDefault(e)
+               let endX = e.changedTouches[0].pageX
+               if (endX - moveStartX > 0) {
+                    // 手指向又滑动，对应页面向右滚动
+                    offsetNow = -1
+                    moveStartX = endX
+                } else if (endX - moveStartX < 0){
+                     // 手指向左滑动，对应页面向左滚动
+                     offsetNow = 1
+                     moveStartX = endX
+                     startX = endX
+                }
+                // 忽略 endx - moveStartX = 0解决抖动轻快
+               rotate()
+
+             })
+            // 手指离开屏幕
+            EventUtil.addHandler(document, 'touchend', e => {
+               EventUtil.preventDefault(e)
+               let endX = e.changedTouches[0].pageX
+               if (endX - startX > 0) {
+                 // 手指向又滑动，对应页面向右滚动
+                 offsetNow = -1
+                } else {
+                 // 手指向左滑动，对应页面向左滚动
+                 offsetNow = 1
+                }
+                clearInterval(id)
+                id = setInterval(rotate, 160)
+             })
+            // 鼠标按下
+            EventUtil.addHandler(document, 'mousedown', e => {
+                EventUtil.preventDefault(e)
+                startX = e.pageX
+                moveStartX = e.pageX
+                clearInterval(id)
+                mouseDown = true
+             })
+            // 鼠标滑动
+            EventUtil.addHandler(document, 'mousemove', e => {
+                if (mouseDown) {
+                  EventUtil.preventDefault(e)
+                  let endX = e.pageX
+                  if (endX - moveStartX > 0) {
+                    // 手指向又滑动，对应页面向右滚动
+                    offsetNow = -1
+                    moveStartX = endX
+                } else if (endX - moveStartX < 0){
+                    // 手指向左滑动，对应页面向左滚动
+                    offsetNow = 1
+                    moveStartX = endX
+                    startX = endX
+                   }
+                  rotate()
+                }
+            })
+            // 鼠标松开
+            EventUtil.addHandler(document, 'mouseup', e => {
+                EventUtil.preventDefault(e)
+                let endX = e.pageX
+                if (endX - startX > 0) {
+                  // 手指向又滑动，对应页面向右滚动
+                  offsetNow = -1
+                 } else {
+                  // 手指向左滑动，对应页面向左滚动
+                  offsetNow = 1
+                 }
+                 clearInterval(id)
+                 id = setInterval(rotate, 160)
+                 mouseDown = false
+             })
+            id = setInterval(rotate, 160)
+
+        </script>
+    </body>
+</html>
