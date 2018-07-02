@@ -59,11 +59,11 @@
     EventUtil.preventDefault(e)
     let endX = e.changedTouches[0].pageX
     if (endX - moveStartX > 0) {
-      // 手指向又滑动，对应页面向右滚动
+      // 手指向右滑动，对应页面向右滚动, 一开始如果是顺时针旋转的就开始变成逆时针旋转，图片的编号递减
       offsetNow = -1
       moveStartX = endX
     } else if (endX - moveStartX < 0) {
-      // 手指向左滑动，对应页面向左滚动
+      // 手指向左滑动，对应页面向左滚动，一开始如果是顺时针旋转的就开始恢复顺时针选中，图片的编号递增，
       offsetNow = 1
       moveStartX = endX
       startX = endX
@@ -77,7 +77,7 @@
     EventUtil.preventDefault(e)
     let endX = e.changedTouches[0].pageX
     if (endX - startX > 0) {
-      // 手指向又滑动，对应页面向右滚动
+      // 手指向右滑动，对应页面向右滚动
       offsetNow = -1
     } else {
       // 手指向左滑动，对应页面向左滚动
